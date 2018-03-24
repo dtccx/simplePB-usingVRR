@@ -1,6 +1,8 @@
 # Primary-Backup-Replication
-Part 1A: Primary-backup in the Normal case
+# Part 1A: Primary-backup in the Normal case
 
 When Start(command) is invoked, the primary should append the command in its log and then send Prepare RPCs to other servers to instruct them to replicate the command in the same index in their log. Note that a server should do the processing for Start only if it believes itself to be the current primary and that its status is NORMAL (as opposed to VIEW-CHANGE or RECOVERY).
+
 #Upon receiving a Prepare RPC message, the backup checks whether the message's view and its currentView match and whether the next entry to be added to the log is indeed at the index specified in the message. If so, the backup adds the message's entry to the log and replies Success=ok. Otherwise, the backup replies Success=false. Furthermore, if the backup's state falls behind the primary (e.g. its view is smaller or its log is missing entries), it performs recovery to transfer the primary's log. Note that the backup server needs to process Prepare messages according to their index order, otherwise, it would end up unnecessarily rejecting many messages.
+
 #If the primary has received Success=true responses from a majority of servers (including itself), it considers the corresponding log index as "committed". (Since servers process Prepare messages ) It advances thecommittedIndex field locally and also piggybacks this information to backup servers in subsequent Prepares.
