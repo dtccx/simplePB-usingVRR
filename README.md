@@ -22,4 +22,14 @@ primary's Prepare requests. Thus, it is never the case that a recovered node "fo
 operations that it has already prepared and relied PrepareOK to. By contrast, VR paper's
 recovery protocol handles the case of "forgetful" recovered nodes.)
 
-When you've finished implementing the Recovery aspect, you should be able to pass all three tests of part-1A by typing go test -v -run 1A
+# When to recover:
+deny prepare (reply.Suceess = false)
+
+
+# part 2:
+
+The tester prompts a view-change by invoking the PromptViewChange(newView) function on the primary server for the newView. Recall that in VR, the view number uniquely determines the primary server. In our implementation, all servers can be identified by their index in the peers array and we map each view number to the id of the primary as: view-number % total_servers (The auxilary function GetPrimary(view, nservers) performs this calculation).
+
+The primary servers starts the view-change process by sending a ViewChange RPC to every replica server (including itself). Upon receving ViewChange, a replica server checks that the view number included in the message is indeed larger than what it thinks the current view number is. If the check succeeds, it sets its current view number to that in the message and modifies its status to VIEW-CHANGE. It replies Success=true and includes its current log (in its entirety) as well as the latest view-number that has been considered NORMAL. If the check fails, the backup replies Success=false.
+
+If the primary has received successful ViewChange replies from a majority of servers (including itself). It can proceed to start the new view. It needs to start the new-view with a log that contains all the committed entries of the previous view. To maintain this invariant, the primary chooses the log among the majority of successful replies using this rule: it picks the log whose lastest normal view number is the largest. If there are more than one such logs, it picks the longest log among those. Once the primary has determined the log for the new-view, it sends out the StartView RPC to all servers to instruct them to start the new view. Uponreceive StartView, a server sets the new-view as indicated in the message and changes its status to be NORMAL. Note that before setting the new-view according to the StartView RPC message, the server must again check that its current view is no bigger than that in the RPC message, which would mean that there's been no concurrent view-change for a larger view.
