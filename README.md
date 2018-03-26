@@ -22,6 +22,7 @@ primary's Prepare requests. Thus, it is never the case that a recovered node "fo
 operations that it has already prepared and relied PrepareOK to. By contrast, VR paper's
 recovery protocol handles the case of "forgetful" recovered nodes.)
 
+
 # When to recover:
 deny prepare (reply.Suceess = false)
 
