@@ -23,7 +23,7 @@ operations that it has already prepared and relied PrepareOK to. By contrast, VR
 recovery protocol handles the case of "forgetful" recovered nodes.)
 
 
-# When to recover:
+## When to recover:
 deny prepare (reply.Suceess = false)
 
 
