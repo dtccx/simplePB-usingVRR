@@ -37,8 +37,8 @@ If the primary has received successful ViewChange replies from a majority of ser
 
 
 # Test Case
-run "go test" to run all cases;
-run "go test 1A" or others to run some certain cases;
-the total cases time is 41s.
-this is average time, but someone optimize it to 17s.
+run "go test" to run all cases;run "go test 1A" or others to run some certain cases;
+
+the total cases time is 41s.this is average time, but someone optimize it to 17s.
+
 With set the reprepare time Threathold.
