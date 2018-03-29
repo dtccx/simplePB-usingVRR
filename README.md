@@ -34,3 +34,11 @@ The tester prompts a view-change by invoking the PromptViewChange(newView) funct
 The primary servers starts the view-change process by sending a ViewChange RPC to every replica server (including itself). Upon receving ViewChange, a replica server checks that the view number included in the message is indeed larger than what it thinks the current view number is. If the check succeeds, it sets its current view number to that in the message and modifies its status to VIEW-CHANGE. It replies Success=true and includes its current log (in its entirety) as well as the latest view-number that has been considered NORMAL. If the check fails, the backup replies Success=false.
 
 If the primary has received successful ViewChange replies from a majority of servers (including itself). It can proceed to start the new view. It needs to start the new-view with a log that contains all the committed entries of the previous view. To maintain this invariant, the primary chooses the log among the majority of successful replies using this rule: it picks the log whose lastest normal view number is the largest. If there are more than one such logs, it picks the longest log among those. Once the primary has determined the log for the new-view, it sends out the StartView RPC to all servers to instruct them to start the new view. Uponreceive StartView, a server sets the new-view as indicated in the message and changes its status to be NORMAL. Note that before setting the new-view according to the StartView RPC message, the server must again check that its current view is no bigger than that in the RPC message, which would mean that there's been no concurrent view-change for a larger view.
+
+
+# Test Case
+run "go test" to run all cases;
+run "go test 1A" or others to run some certain cases;
+the total cases time is 41s.
+this is average time, but someone optimize it to 17s.
+With set the reprepare time Threathold.
