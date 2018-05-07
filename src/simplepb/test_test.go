@@ -232,6 +232,7 @@ func Test1BConcurrentViewChange(t *testing.T) {
 	cfg.disconnect(v0Primary)
 
 	// try to commit command 6002 through disconnected v0Primary, should not succeed
+	// test V0 is invalid.
 	index, _, ok := cfg.pbservers[v0Primary].Start(5999)
 	if !ok {
 		t.Fatalf("primary rejected the command\n")
@@ -246,6 +247,7 @@ func Test1BConcurrentViewChange(t *testing.T) {
 	}
 
 	// concurrent view change
+	// do viewchange
 	var wg sync.WaitGroup
 	newView := 2
 	for v := 1; v <= newView; v++ {
